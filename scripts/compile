@@ -1,0 +1,134 @@
+#!/usr/bin/env ruby
+require 'tmpdir'
+require 'yaml'
+require 'timeout'
+
+BUILDPACKS_ROOT = "/vagrant/buildpacks"
+CACHE_ROOT = "/home/vagrant/cache"
+
+`rm -rf /app/* 2>&1 /dev/null`
+`rm -rf /app/.* 2>&1 /dev/null`
+
+class Buildpack
+  def initialize(path, build, cache)
+    @path = path
+    @build = build
+    @cache = cache
+  end
+
+  def to_s
+    File.basename(@path)
+  end
+
+  def detect
+    name = `cd #{@cache} && #{@path}/bin/detect #{@build}`.strip
+    name if $?.success?
+  end
+
+  def compile
+    cmd = "#{@path}/bin/compile"
+    env = {
+      "PATH" => [
+        "/usr/local/rvm/rubies/ruby-2.0.0-p195/bin/ruby",
+        "/usr/local/rvm/bin",
+        "/usr/local/sbin",
+        "/usr/local/bin",
+        "/usr/sbin",
+        "/usr/bin",
+        "/sbin",
+        "/bin",
+      ].join(":")
+    }
+    timeout = (ENV["COMPILE_TIMEOUT"] || 900).to_i
+    Timeout.timeout(timeout) do
+      pid = spawn(env, cmd, @build, @cache, unsetenv_others: true, err: :out)
+      Process.wait(pid)
+      if $?.exitstatus.zero?
+        return true
+      else
+        return false
+      end
+    end
+  rescue Timeout::Error
+    puts "timed out; must complete in #{timeout} seconds"
+    exit 4
+  end
+
+  def release
+    release = `cd #{@cache} && #{@path}/bin/release #{@build}`
+    release if $?.success?
+  end
+end
+
+
+def make_procfile(build, release)
+  original = YAML.load(release.strip)["default_process_types"] || {}
+  procfile_path = File.join(build, "Procfile")
+
+  if File.exists? procfile_path
+    data = File.read(procfile_path).strip
+    procfile = YAML.load(data)
+    original.merge!(procfile)
+  end
+
+  original
+end
+
+def prune(build_dir)
+  FileUtils.rm_rf(File.join(build_dir, ".git"))
+  FileUtils.rm_rf(File.join(build_dir, "tmp"))
+end
+
+def archive(build_dir, slug)
+  system("tar", "czf", slug, "--owner=root", "--hard-dereference",
+         "-C", build_dir, ".",
+         [:out, :err] => "/dev/null") or raise("couldn't tar")
+  return slug
+rescue => e
+  puts("could not archive slug", e)
+  exit 1
+end
+
+source = ARGV[0]
+name = File.basename(source)
+target = ARGV[1] || File.join(Dir.pwd, "#{name}.slug")
+
+# Create cache if it doesn't exist
+cache = File.join(CACHE_ROOT, name)
+FileUtils.mkdir_p cache
+FileUtils.rm_rf "/app/.heroku"
+
+Dir.mktmpdir do |dir|
+  build = File.join(dir, "app")
+  FileUtils.cp_r source, build
+
+  Dir[File.join(BUILDPACKS_ROOT, '*')].each do |path|
+    pack = Buildpack.new(path, build, cache)
+    if name = pack.detect
+      puts "-----> #{name} app detected"
+      if pack.compile
+        procfile = make_procfile(build, pack.release)
+
+        File.open(File.join(build, "Procfile"), 'w') do |f|
+          procfile.each do |key, value|
+            f.puts("#{key}: #{value}")
+          end
+        end
+
+        prune(build)
+        archive(build, target)
+        slug_size = File.size(target) / 1024
+
+        puts "-----> Compiled slug size: #{slug_size}K"
+        puts "Success"
+        exit 0
+      else
+        puts "build failed"
+        exit 1
+      end
+    end
+  end
+end
+
+puts "no compatible app detected"
+exit 2

@@ -1,0 +1,4 @@
+desc 'sample task'
+task :default do
+  puts "I'm a rake task!"
+end

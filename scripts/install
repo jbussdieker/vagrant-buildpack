@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+slug = ARGV[0]
+
+`rm -rf /app/* 2>&1 /dev/null`
+`rm -rf /app/.* 2>&1 /dev/null`
+`tar -zxf #{slug} -C /app`

@@ -1,0 +1,30 @@
+#!/bin/bash
+HOME=/app
+export HOME=/app
+TYPE=$1
+shift
+COMMAND=$1
+shift
+
+if [ -d $HOME/.profile.d ]; then
+  for i in $HOME/.profile.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+cd $HOME
+
+if foreman check > /dev/null; then
+  if foreman check | grep $COMMAND > /dev/null; then
+    exec foreman $TYPE $COMMAND -d /app $@
+  else
+    echo "Missing $COMMAND command"
+    exit 2
+  fi
+else
+  echo "Invalid procfile exiting"
+  exit 1
+fi

@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "0.0.1",
+  "description": "simple nodejs server",
+  "repository":"https://github.com/jbussdieker/vagrant-buildpack",
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "logfmt": "~1.1.2",
+    "express": "~4.6.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  }
+}

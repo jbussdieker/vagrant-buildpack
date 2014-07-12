@@ -1,0 +1,42 @@
+[submodule "puppet/modules/vcsrepo"]
+	path = puppet/modules/vcsrepo
+	url = https://github.com/puppetlabs/puppetlabs-vcsrepo.git
+	branch = master
+[submodule "puppet/modules/stdlib"]
+	path = puppet/modules/stdlib
+	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
+	branch = master
+[submodule "puppet/modules/rvm"]
+	path = puppet/modules/rvm
+	url = https://github.com/maestrodev/puppet-rvm.git
+	branch = maestrodev
+[submodule "buildpacks/heroku-buildpack-php"]
+	path = buildpacks/heroku-buildpack-php
+	url = https://github.com/heroku/heroku-buildpack-php.git
+[submodule "buildpacks/heroku-buildpack-play"]
+	path = buildpacks/heroku-buildpack-play
+	url = https://github.com/heroku/heroku-buildpack-play.git
+[submodule "buildpacks/heroku-buildpack-scala"]
+	path = buildpacks/heroku-buildpack-scala
+	url = https://github.com/heroku/heroku-buildpack-scala.git
+[submodule "buildpacks/heroku-buildpack-grails"]
+	path = buildpacks/heroku-buildpack-grails
+	url = https://github.com/heroku/heroku-buildpack-grails.git
+[submodule "buildpacks/heroku-buildpack-gradle"]
+	path = buildpacks/heroku-buildpack-gradle
+	url = https://github.com/heroku/heroku-buildpack-gradle.git
+[submodule "buildpacks/heroku-buildpack-java"]
+	path = buildpacks/heroku-buildpack-java
+	url = https://github.com/heroku/heroku-buildpack-java.git
+[submodule "buildpacks/heroku-buildpack-python"]
+	path = buildpacks/heroku-buildpack-python
+	url = https://github.com/heroku/heroku-buildpack-python.git
+[submodule "buildpacks/heroku-buildpack-clojure"]
+	path = buildpacks/heroku-buildpack-clojure
+	url = https://github.com/heroku/heroku-buildpack-clojure.git
+[submodule "buildpacks/heroku-buildpack-nodejs"]
+	path = buildpacks/heroku-buildpack-nodejs
+	url = https://github.com/heroku/heroku-buildpack-nodejs.git
+[submodule "buildpacks/heroku-buildpack-ruby"]
+	path = buildpacks/heroku-buildpack-ruby
+	url = https://github.com/heroku/heroku-buildpack-ruby.git

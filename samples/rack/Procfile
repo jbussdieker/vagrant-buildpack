@@ -1,0 +1,3 @@
+rake: bundle exec rake
+console: bundle exec irb
+web: bundle exec rackup config.ru -p $PORT
