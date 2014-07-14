@@ -1,0 +1,7 @@
+#!/bin/bash
+for project in samples/*; do
+  name=$(basename $project)
+  echo $name
+  compile $project $HOME/slugs/$name.slug > $HOME/logs/$name.log
+  echo " * exited $?"
+done

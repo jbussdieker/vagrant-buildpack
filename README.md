@@ -9,10 +9,9 @@ Basic Vagrant environment created by Puppet for playing with Heroku's buildpacks
 
 ## Usage
 
-Make sure to download the submodules:
+NOTE: Make sure to update the submodules before getting started.
 
-    $ git submodule init
-    $ git submodule update
+    $ git submodule update --init
 
 Quick start:
 
