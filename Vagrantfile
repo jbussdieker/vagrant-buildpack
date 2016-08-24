@@ -3,7 +3,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "http://cloud-images.ubuntu.com/vagrant/trusty/20140712/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box = "ubuntu/trusty64"
   config.vm.synced_folder "buildpacks", "/home/vagrant/buildpacks"
   config.vm.synced_folder "scripts", "/home/vagrant/bin"
   config.vm.synced_folder "samples", "/home/vagrant/samples"
